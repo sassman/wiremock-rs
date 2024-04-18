@@ -5,7 +5,7 @@ use std::net::TcpStream;
 use std::time::Duration;
 use surf::StatusCode;
 use wiremock::matchers::{body_json, body_partial_json, method, path, PathExactMatcher};
-use wiremock::{Mock, MockServer, ResponseTemplate};
+use wiremock::{Mock, MockServer, Request, Respond, ResponseFromRecording, ResponseTemplate};
 
 #[async_std::test]
 async fn new_starts_the_server() {
@@ -181,6 +181,33 @@ async fn body_json_matches_independent_of_key_ordering() {
     let mock_server = MockServer::start().await;
     let response = ResponseTemplate::new(200);
     let mock = Mock::given(method("POST"))
+        .and(body_json(expected_body))
+        .respond_with(response);
+    mock_server.register(mock).await;
+
+    // Act
+    let response = surf::post(mock_server.uri()).body(body).await.unwrap();
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::Ok);
+}
+
+#[async_std::test]
+async fn lazy_recording_response() {
+    #[derive(Serialize)]
+    struct X {
+        b: u8,
+        a: u8,
+    }
+
+    // Arrange
+    let expected_body = json!({ "a": 1, "b": 2 });
+    let body = serde_json::to_string(&X { a: 1, b: 2 }).unwrap();
+
+    let mock_server = MockServer::start().await;
+    let response = ResponseFromRecording::lazy_record("https://httpbin.org/anything");
+    let mock = Mock::given(method("POST"))
+        .and(path("/super-special-page"))
         .and(body_json(expected_body))
         .respond_with(response);
     mock_server.register(mock).await;

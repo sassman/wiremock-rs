@@ -36,7 +36,7 @@
 //!         // Mounting the mock on the mock server - it's now effective!
 //!         .mount(&mock_server)
 //!         .await;
-//!     
+//!
 //!     // If we probe the MockServer using any HTTP client it behaves as expected.
 //!     let status = surf::get(format!("{}/hello", &mock_server.uri()))
 //!         .await
@@ -58,7 +58,7 @@
 //! `wiremock` provides a set of matching strategies out of the box - check the [`matchers`] module
 //! for a complete list.
 //!
-//! You can define your own matchers using the [`Match`] trait, as well as using `Fn` closures.  
+//! You can define your own matchers using the [`Match`] trait, as well as using `Fn` closures.
 //! Check [`Match`]'s documentation for more details and examples.
 //!
 //! ## Spying
@@ -69,7 +69,7 @@
 //! Expectations can be used to verify that a side-effect has (or has not) taken place!
 //!
 //! Expectations are automatically verified during the shutdown of each [`MockServer`] instance,
-//! at the end of your test. A failed verification will trigger a panic.  
+//! at the end of your test. A failed verification will trigger a panic.
 //! By default, no expectations are set on your [`Mock`]s.
 //!
 //! ## Responses
@@ -78,7 +78,7 @@
 //! [`respond_with`].
 //!
 //! You also given the option to have [`Mock`]s that return different responses based on the matched
-//! [`Request`] using the [`Respond`] trait.  
+//! [`Request`] using the [`Respond`] trait.
 //! Check [`Respond`]'s documentation for more details and examples.
 //!
 //! ## Test isolation
@@ -95,13 +95,13 @@
 //! ## Runtime compatibility
 //!
 //! `wiremock` can be used (and it is tested to work) with both [`async_std`] and [`tokio`] as
-//! futures runtimes.  
+//! futures runtimes.
 //! If you encounter any compatibility bug, please open an issue on our [GitHub repository].
 //!
 //! ## Efficiency
 //!
 //! `wiremock` maintains a pool of mock servers in the background to minimise the number of
-//! connections and the time spent starting up a new [`MockServer`].  
+//! connections and the time spent starting up a new [`MockServer`].
 //! Pooling reduces the likelihood of you having to tune your OS configurations (e.g. ulimit).
 //!
 //! The pool is designed to be invisible: it makes your life easier and your tests faster. If you
@@ -154,9 +154,11 @@ mod request;
 mod respond;
 mod response_template;
 mod verification;
+mod response_from_recording;
 
 pub use mock::{Match, Mock, MockBuilder, Times};
 pub use mock_server::{MockGuard, MockServer, MockServerBuilder};
 pub use request::Request;
 pub use respond::Respond;
 pub use response_template::ResponseTemplate;
+pub use response_from_recording::ResponseFromRecording;
